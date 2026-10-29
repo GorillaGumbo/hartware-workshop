@@ -591,7 +591,7 @@ async function save({downloadOnly=false}={}){if(savePending)return;savePending=t
  // Obtain the picker during the user gesture, before any asynchronous packaging.
  // The picker suffix grammar disallows '-' in filters, even though .lovely-ui is a valid filename.
  // Keep portable filenames compatible and use the unfiltered picker for binary projects.
- const handle=!downloadOnly&&window.showSaveFilePicker?await window.showSaveFilePicker({suggestedName:name,...(binary?{}:{types:[{description:'HärtWare prototype project',accept:{'application/json':['.json']}}]})}):null;
+ let handle=null;if(!downloadOnly&&window.showSaveFilePicker){try{handle=await window.showSaveFilePicker({suggestedName:name,...(binary?{}:{types:[{description:'HärtWare prototype project',accept:{'application/json':['.json']}}]})});}catch(error){if(!['SecurityError','NotAllowedError'].includes(error.name))throw error;}}
  const payload=binary?packProject(project,blobs):snapshot(project);if(!binary&&new Blob([payload]).size>limits.manifest)throw new Error('Project metadata exceeds 24 MiB. Reduce image sizes.');if(handle){writable=await handle.createWritable();await writable.write(payload);await writable.close();}else download(binary?payload:new Blob([payload],{type:'application/json'}),name);
  if(epoch===projectEpoch)savedRevision=captured;toast(handle?'Prototype project saved.':'Prototype project downloaded.');updateSave();
  }catch(e){try{await writable?.abort();}catch{}if(e.name!=='AbortError')toast('Could not save: '+e.message);}finally{savePending=false;}}
