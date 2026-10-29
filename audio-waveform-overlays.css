@@ -1,0 +1,61 @@
+@import url('./parameter-controls.css');
+.waveform-overlays{z-index:auto;overflow:visible}
+.waveform-split-region{z-index:3;opacity:.55;cursor:grab}
+.waveform-split-region:active{cursor:grabbing}
+.waveform-split-line{width:1px;background:#d8e5eb;pointer-events:none;z-index:2}
+.waveform-join{width:0;border-left:1px dashed #bba77c;pointer-events:none}
+.waveform-blend{min-width:1px;background:rgba(226,184,117,.18);border-inline:1px solid #c7a971;pointer-events:none}
+.waveform-blend:after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom right,transparent calc(50% - .7px),#c7a971 50%,transparent calc(50% + .7px)),linear-gradient(to top right,transparent calc(50% - .7px),#91adbb 50%,transparent calc(50% + .7px));opacity:.8}
+.waveform-edge-in,.waveform-edge-out{z-index:3}
+/* Selection grips sit on WaveSurfer's native left/right resize targets.
+   The framed icon is the hit target: native Regions pointer gestures bubble from it. */
+.waveform-display [part~="region-handle"]{width:12px!important;z-index:4!important;cursor:ew-resize;touch-action:none}
+.waveform-display [part~="region-handle-left"]{border-left:2px solid #8fc7dd!important;border-radius:0!important}
+.waveform-display [part~="region-handle-right"]{border-right:2px solid #8fc7dd!important;border-radius:0!important}
+.waveform-selection-grip{position:absolute;top:50%;display:flex;align-items:center;justify-content:center;width:26px;height:34px;box-sizing:border-box;border:1px solid #86aebe;border-radius:4px;background:#223138;color:#e3e3e3;box-shadow:0 1px 5px #0710139c;cursor:ew-resize;pointer-events:auto;touch-action:none;user-select:none}
+.waveform-selection-grip svg{display:block;width:20px;height:20px;fill:currentColor;pointer-events:none}
+.waveform-display [part~="region-handle-left"] .waveform-selection-grip{left:0;transform:translate(-50%,-50%)}
+.waveform-display [part~="region-handle-right"] .waveform-selection-grip{right:0;transform:translate(50%,-50%)}
+.waveform-display [part~="region-handle-left"].at-file-boundary .waveform-selection-grip{transform:translate(0,-50%)}
+.waveform-display [part~="region-handle-right"].at-file-boundary .waveform-selection-grip{transform:translate(0,-50%)}
+.waveform-display [part~="region-handle"]:is(:hover,:focus-within) .waveform-selection-grip{border-color:#c3e4ef;background:#354a55;box-shadow:0 0 0 1px #071013,0 0 0 3px #8fc7dd44}
+.waveform-handle{position:absolute;top:0;bottom:0;width:24px;transform:translateX(-50%);z-index:5;border:0;border-radius:0;background:transparent;padding:0;pointer-events:auto;cursor:ew-resize;touch-action:none;color:#8fc7dd}
+.waveform-handle:before{content:'';position:absolute;top:3px;left:8px;width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 1px #142025}
+.waveform-handle.out:before{top:3px}
+.waveform-handle.split{color:#e1ebef}
+.waveform-handle.blend-left,.waveform-handle.blend-right{color:#d3b577}
+.waveform-handle.blend-left{transform:translateX(-100%)}
+.waveform-handle.blend-left:before{left:auto;right:0}
+.waveform-handle.blend-right{transform:none}
+.waveform-handle.blend-right:before{left:0}
+.waveform-handle:focus-visible{outline:1px solid #d3e4ec;outline-offset:-2px}
+.waveform-handle-value{display:none;position:absolute;top:15px;left:50%;transform:translateX(-50%);background:#152125;border:1px solid #64757e;color:#e1ebef;padding:3px 6px;border-radius:4px;white-space:nowrap;font:11px ui-monospace,monospace;pointer-events:none}
+.waveform-handle:is(:hover,:focus-visible,.is-adjusting) .waveform-handle-value{display:block}
+.waveform-handle.in .waveform-handle-value{left:100%;transform:none}
+.waveform-handle.out .waveform-handle-value{left:auto;right:100%;transform:none}
+.waveform-peak{position:absolute;visibility:hidden;pointer-events:none;transform:translate(-50%,-100%);margin-top:-7px;white-space:nowrap;max-width:100%;background:#152024ed;border:1px solid #41545d;border-radius:4px;padding:2px 5px;font:10px ui-monospace,monospace;color:#cddae0;z-index:3}
+.waveform-display:hover .waveform-peak{visibility:visible;pointer-events:auto}
+.waveform-peak:after{content:'';position:absolute;bottom:-8px;left:50%;height:7px;border-left:1px solid #cddae0}
+.waveform-peak.peak-over{color:#e9be7c}
+.waveform-peak.peak-below{transform:translate(-50%,0)!important;margin-top:8px}
+.waveform-peak.peak-below:after{bottom:auto;top:-8px}
+
+.waveform-handle.join-move{top:50%;bottom:auto;width:30px;height:30px;transform:translate(-50%,-50%);cursor:grab;color:#d3b577;background:#192126e8;border:1px solid #7b6e50;border-radius:4px;z-index:6}
+.waveform-handle.join-move:before{display:none}
+.waveform-handle.join-move svg{width:20px;height:20px;display:block;margin:auto}
+.waveform-handle.join-move:is(:active,.is-adjusting){cursor:grabbing}
+.waveform-handle.join-move:disabled{opacity:.4;cursor:default}
+.waveform-handle.join-move .waveform-handle-value{top:32px}
+
+.waveform-blend.is-equal-power:after{display:none}
+.waveform-blend>svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.waveform-snippet{background:#a0bec510;border-inline:1px solid #6f8b9680;z-index:1}
+.waveform-snippet.is-active{background:#a0bec520;border-color:#9abac8}
+.waveform-snippet-label{position:absolute;top:8px;left:5px;max-width:calc(100% - 10px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:auto;background:#1c292eed;border:1px solid #536770;border-radius:3px;color:#c9d9e0;font:10px ui-monospace,monospace;padding:3px 5px;cursor:pointer}
+.waveform-snippet-label[aria-pressed=true]{border-color:#a0bec5;color:#e9f0f3}
+.waveform-snippet-label:focus-visible{outline:2px solid #d3e4ec;outline-offset:2px}
+
+.waveform-promote{position:absolute;top:50%;transform:translate(-50%,-50%);z-index:7;width:30px;height:30px;padding:5px;border:1px solid #9ab6c3;border-radius:4px;background:#26373f;color:#e3e3e3;cursor:pointer;pointer-events:auto}.waveform-promote svg{width:20px;height:20px;display:block;fill:currentColor}.waveform-promote:hover{background:#3b525f}.waveform-promote:focus-visible{outline:2px solid #e1e9eb;outline-offset:2px}.waveform-promote:disabled{opacity:.4;cursor:default}.waveform-promote[hidden]{display:none!important}
+
+.waveform-handle:focus-within .waveform-handle-value{display:block}
+.waveform-handle-value.is-editing{display:block;z-index:12}

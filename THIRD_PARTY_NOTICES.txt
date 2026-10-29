@@ -1,0 +1,66 @@
+WaveSurfer.js 7.12.3 — bundled in audio-waveform.js
+https://github.com/katspaugh/wavesurfer.js
+
+BSD 3-Clause License
+
+Copyright (c) 2012-2023, katspaugh and contributors
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+CodeMirror 5.65.16 show-hint addon (JavaScript and CSS)
+https://github.com/codemirror/codemirror5/tree/5.65.16/addon/hint
+MIT license; see vendor/codemirror-LICENSE.
+
+LÖVE API functional reference data (names, types, signatures and enums only)
+https://github.com/love2d-community/love-api
+Pinned revision 447486c14b7af6ffb610c47d9b800703b4e628f4; API version 11.5.
+Descriptions and examples in Lovely's preview reference are authored for Lovely.
+Upstream wiki prose is not bundled. See docs/LUA_PROGRAMMING.md for regeneration.
+
+
+LÖVE 11.5 RandomGenerator — altered JavaScript port in love-math.js
+Source: https://github.com/love2d/love/tree/6eb8d546736d5915a8b5af30b2cf33456dfdcb1a/src/modules/math
+/**
+ * Copyright (c) 2006-2023 LOVE Development Team
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty.  In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ * 2. Altered source versions must be plainly marked as such, and must not be
+ *    misrepresented as being the original software.
+ * 3. This notice may not be removed or altered from any source distribution.
+ */

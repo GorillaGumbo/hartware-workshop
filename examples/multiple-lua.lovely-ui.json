@@ -1,0 +1,19 @@
+{
+  "format": "lovely-ui-prototype",
+  "version": 16,
+  "name": "Two Lua files",
+  "code": "local player = require(\"player\")\n\nfunction love.load()\n  love.graphics.setBackgroundColor(0.12, 0.16, 0.13)\nend\n\nfunction love.update(dt)\n  player.update(dt)\nend\n\nfunction love.draw()\n  player.draw()\nend\n",
+  "scripts": [
+    {
+      "id": "player-example",
+      "name": "player.lua",
+      "code": "local player = {x = 180, y = 140, radius = 40, speed = 180}\n\nfunction player.update(dt)\n  if love.keyboard.isDown(\"right\") then\n    player.x = player.x + player.speed * dt\n  elseif love.keyboard.isDown(\"left\") then\n    player.x = player.x - player.speed * dt\n  end\nend\n\nfunction player.draw()\n  love.graphics.setColor(0.85, 0.9, 0.7)\n  love.graphics.circle(\"fill\", player.x, player.y, player.radius)\nend\n\nreturn player\n"
+    }
+  ],
+  "settings": {
+    "width": 800,
+    "height": 600
+  },
+  "assets": [],
+  "events": []
+}

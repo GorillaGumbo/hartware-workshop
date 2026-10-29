@@ -1,0 +1,28 @@
+.lua-target{margin-right:auto;flex-shrink:0;font-size:11px;letter-spacing:.02em;color:var(--muted,#99a49d);white-space:nowrap}
+.lua-status{width:auto!important;flex-shrink:0;font-size:11px!important;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0!important;padding:4px 6px!important}
+.lua-status:disabled{opacity:.65!important}.lua-status[data-kind="error"]{color:#efaaa0}.lua-status[data-kind="warning"]{color:#e7cc87}
+.lua-reference-button{display:grid;place-items:center;flex-shrink:0}.script-tools #pending-code{font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lua-popover{position:fixed;z-index:180;max-height:min(380px,calc(100vh - 24px));overflow:auto;padding:17px 18px;border:1px solid #4a5650;border-radius:9px;background:#222b26;color:#ecede5;box-shadow:0 12px 35px #0007;font-size:12px;line-height:1.5}
+.lua-popover[hidden]{display:none}.lua-popover-close{float:right;margin:-8px -9px 0 8px;font-size:22px;line-height:1;min-width:26px!important;min-height:26px!important}
+.lua-popover strong,#lua-reference-detail>strong{display:block;font-family:monospace;font-size:13px;overflow-wrap:anywhere;padding-right:18px}
+.lua-api-badge{display:inline-block;font-size:10px;color:#c7d6a8;background:#bacf9020;border-radius:3px;padding:2px 5px;margin:6px 0}
+.lua-popover pre,#lua-reference-detail pre{font-size:11px;font-family:monospace;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6;background:#10181388;padding:8px;border-radius:4px;margin:8px 0}
+.lua-api-note{color:#e3cca0;border-left:2px solid #8e7b4f;padding-left:10px}.lua-active-parameter{color:#d8e6b0}
+.lua-parameters{margin:10px 0}.lua-parameters dt{font:11px monospace;color:#d0d9c5;margin-top:7px}.lua-parameters dd{margin:2px 0 0;color:#acb8ae;font-size:11px}
+.lua-popover a,#lua-reference-detail a{color:#d2e1ab;text-underline-offset:3px}.lua-popover details summary,#lua-reference-detail details summary{cursor:pointer;color:#bac5b8;font-size:11px}
+.cm-lua-diagnostic{background:#bc696b18!important;box-shadow:inset 2px 0 #c18d67}
+.CodeMirror-hints{z-index:190;background:#242e27;border:1px solid #53604c;box-shadow:0 8px 25px #0006;border-radius:6px;max-width:min(480px,calc(100vw - 24px));padding:4px;color:#e2e8da;font-size:12px;line-height:1.7}
+.CodeMirror-hint{padding:3px 8px;border-radius:3px;display:flex;gap:16px;align-items:center;justify-content:space-between;color:inherit;white-space:nowrap}
+.CodeMirror-hint small{color:#9faa9c;font:10px system-ui}.CodeMirror-hint-active{background:#536442;color:#fff}.CodeMirror-hint-active small{color:#dbe5cd}
+.lua-reference-dialog{width:min(850px,calc(100vw - 32px));max-width:none;max-height:calc(100vh - 32px);overflow:auto;padding:22px!important}
+.lua-reference-target{font-size:12px;color:#aebbac;line-height:1.5;margin-top:0}.lua-reference-filters{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.lua-reference-filters>input{flex:1;min-width:180px;margin:0}.lua-reference-filters label{display:flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap;margin:0}.lua-reference-filters input[type="checkbox"]{width:auto;margin:0;accent-color:#b6cc90}
+#lua-reference-count{font-size:11px;margin:10px 0}.lua-reference-layout{display:grid;grid-template-columns:minmax(170px, .8fr) minmax(0,1.2fr);gap:18px;height:min(470px,58vh)}
+#lua-reference-results{overflow:auto;padding-right:5px}.lua-reference-result{width:100%;display:block;text-align:left;overflow-wrap:anywhere;min-height:36px;padding:7px 9px;border:0;border-radius:5px;background:none;color:#c4cebf;font:11px monospace;cursor:pointer}.lua-reference-result small{display:block;font:10px system-ui;color:#8e9c8a;margin-top:2px}.lua-reference-result[aria-current="true"],.lua-reference-result:hover{background:#adbf8320;color:#eef4df}
+#lua-reference-detail{overflow:auto;padding:4px 8px 12px;font-size:12px;line-height:1.5;min-width:0}
+@media(max-width:650px){.script-tools{gap:4px!important}.lua-status{max-width:120px}.lua-target{font-size:10px}.script-tools #pending-code{display:none}.lua-reference-layout{grid-template-columns:1fr;height:auto;max-height:65vh;overflow:auto}.lua-reference-dialog{padding:16px!important}#lua-reference-results{max-height:150px}#lua-reference-detail{overflow:visible}.lua-reference-filters{gap:8px}}
+@media(max-width:370px){.lua-target{display:none}.lua-status{max-width:110px}}
+
+/* Zero-width bookmarks decorate source without adding rows or source text. */
+.CodeMirror .lua-inlay{display:inline-block;vertical-align:baseline;margin:0 .3em 0 .1em;padding:0 .25em;border-radius:3px;background:#a4b59a14;color:#92a28b;font-size:.75em;font-style:normal;font-weight:400;line-height:1;user-select:none;-webkit-user-select:none;pointer-events:none}
+.lua-inlays-button{flex-shrink:0;font:12px monospace!important;min-width:27px!important;padding:4px!important;color:var(--muted,#99a49d)}
+.lua-inlays-button[aria-pressed="true"]{background:#a4b59a18;color:#cedabf}
