@@ -589,7 +589,9 @@ async function persistRecovery(){
 function download(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),20000);}
 async function save({downloadOnly=false}={}){if(savePending)return;savePending=true;let writable;try{const captured=revision,epoch=projectEpoch,project=capturedProject(),binary=project.assets.some(asset=>isAudioRef(asset.data)),name=exportName(state.name,binary?'.lovely-ui':'.lovely-ui.json'),blobs=projectBlobs(project,originalAudio);
  // Obtain the picker during the user gesture, before any asynchronous packaging.
- const handle=!downloadOnly&&window.showSaveFilePicker?await window.showSaveFilePicker({suggestedName:name,types:[{description:'HärtWare prototype project',accept:binary?{'application/x-lovely-ui':['.lovely-ui']}:{'application/json':['.json']}}]}):null;
+ // The picker suffix grammar disallows '-' in filters, even though .lovely-ui is a valid filename.
+ // Keep portable filenames compatible and use the unfiltered picker for binary projects.
+ const handle=!downloadOnly&&window.showSaveFilePicker?await window.showSaveFilePicker({suggestedName:name,...(binary?{}:{types:[{description:'HärtWare prototype project',accept:{'application/json':['.json']}}]})}):null;
  const payload=binary?packProject(project,blobs):snapshot(project);if(!binary&&new Blob([payload]).size>limits.manifest)throw new Error('Project metadata exceeds 24 MiB. Reduce image sizes.');if(handle){writable=await handle.createWritable();await writable.write(payload);await writable.close();}else download(binary?payload:new Blob([payload],{type:'application/json'}),name);
  if(epoch===projectEpoch)savedRevision=captured;toast(handle?'Prototype project saved.':'Prototype project downloaded.');updateSave();
  }catch(e){try{await writable?.abort();}catch{}if(e.name!=='AbortError')toast('Could not save: '+e.message);}finally{savePending=false;}}
