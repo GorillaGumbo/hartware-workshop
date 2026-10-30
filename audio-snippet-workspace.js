@@ -1,5 +1,5 @@
 import {mountParameterValue,paintParameterSlider} from './parameter-controls.js';
-import {createSnippetIcon} from './audio-ui-icons.js';
+import {createSnippetIcon,audioToolPaths} from './audio-ui-icons.js';
 // Thumbnail paths reuse bounded display peaks; they never decode or own playback.
 export function snippetPreviewPath(data,start,end,points=48){
  if(!data?.peaks?.length||!(data.duration>0)||!Number.isFinite(start)||!Number.isFinite(end)||end<=start)return '';
@@ -11,8 +11,9 @@ export function mountSnippetWorkspace(root,{document=root.ownerDocument,source,g
  let destroyed=false,activeId=null,showFades=false,loop=false,playing=false,selection=null,view=null,overview=null,popup=null;
  const nodes=[],rows=new Map(),el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text)n.textContent=text;return n;},listen=(n,type,fn)=>{n['on'+type]=fn;nodes.push([n,type]);};
  const paths={play:'m8 5 11 7-11 7Z',stop:'M5 5h14v14H5Z',loop:'M280-80 120-240l160-160 56 58-62 62h406v-160h80v240H274l62 62-56 58Zm-80-440v-240h486l-62-62 56-58 160 160-160 160-56-58 62-62H280v160h-80Z',fade:'m80-80 800-800v800H80Zm193-80h527v-526L273-160Z',undo:'M7 5v4h8a6 6 0 0 1 0 12v-2a4 4 0 0 0 0-8H7v4l-6-5Z',redo:'M17 5v4H9a6 6 0 0 0 0 12v-2a4 4 0 0 1 0-8h8v4l6-5Z',remove:'M7 4V2h10v2h5v2h-2v16H4V6H2V4Zm-1 2v14h12V6Zm3 2v10h2V8Zm4 0v10h2V8Z',volume:'M3 9v6h4l5 4V5L7 9Zm11-2v2a4 4 0 0 1 0 6v2a6 6 0 0 0 0-10Z',rename:'M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25ZM20.71 7.04a1 1 0 0 0 0-1.42l-2.34-2.33a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z',normalize:'M160-80v-80h640v80H160Zm320-120L320-360l56-56 64 62v-252l-64 62-56-56 160-160 160 160-56 56-64-62v252l64-62 56 56-160 160ZM160-800v-80h640v80H160Z',reset:'M5 5h7a8 8 0 1 1-8 8h2a6 6 0 1 0 6-6H5v4L1 6l4-5Z'};
- paths.download='M11 3h2v10l3-3 1 1-5 5-5-5 1-1 3 3ZM4 17h2v3h12v-3h2v5H4Z';
- function glyph(n,key){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),path=document.createElementNS('http://www.w3.org/2000/svg','path');svg.setAttribute('viewBox',['loop','normalize','fade'].includes(key)?'0 -960 960 960':'0 0 24 24');svg.setAttribute('aria-hidden','true');path.setAttribute('d',paths[key]);svg.append(path);n.replaceChildren(svg);}
+ Object.assign(paths,{undo:audioToolPaths.undo,redo:audioToolPaths.redo,reset:audioToolPaths.undo,loop:audioToolPaths.loop});
+ paths.download=audioToolPaths.download;
+ function glyph(n,key){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg'),path=document.createElementNS('http://www.w3.org/2000/svg','path');svg.setAttribute('viewBox',['normalize','fade'].includes(key)?'0 -960 960 960':'0 0 24 24');svg.setAttribute('aria-hidden','true');path.setAttribute('d',paths[key]);svg.append(path);n.replaceChildren(svg);}
  function tip(n,text){n.setAttribute('data-tip',text);}
  function button(host,label,key,fn){const n=el('button','audio-icon-button waveform-button');n.type='button';n.setAttribute('aria-label',label);tip(n,label);if(key==='snippet')n.append(createSnippetIcon(document));else glyph(n,key);listen(n,'click',()=>{if(!destroyed&&!n.disabled)fn();});host.append(n);return n;}
  const content=el('div','asset-workspace-content sound-workspace snippet-workspace'),heading=el('div','sound-file-heading'),title=el('h2'),name=el('input','asset-name');name.maxLength=80;name.setAttribute('aria-label','Pool name');listen(name,'change',()=>{actions.renamePool(name.value.trim());update();});title.append(name);heading.append(title);

@@ -46,12 +46,15 @@
 .audio-waveform:focus-visible{outline:2px solid #b7cbd2;border-radius:3px}
 .waveform-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:3px;padding:5px 0 10px;min-height:40px;border-top:1px solid var(--line)}
 .waveform-toolbar .asset-transport{display:flex;align-items:center;justify-content:flex-start;flex-wrap:nowrap;gap:2px;margin-right:2px}
-.waveform-toolbar .asset-transport button{width:30px;height:30px;border-radius:4px}
+.waveform-toolbar .asset-transport button{width:32px;height:32px;padding:4px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center}
 .waveform-toolbar .asset-preview-loop[aria-pressed=true]{background:#52616a;box-shadow:inset 0 0 0 1px #819198}
 .waveform-toolbar #asset-preview-status{font-size:10px;max-width:92px;line-height:1.35;text-align:left;margin:0 5px}
 .waveform-button{cursor:pointer}
 .waveform-button:disabled{opacity:.3;cursor:default}
-.waveform-button svg,.sound-file-history svg,.waveform-volume-icon svg{width:20px;height:20px;fill:currentColor;display:block}
+.waveform-button svg,.sound-file-history svg,.waveform-volume-icon svg{width:24px;height:24px;fill:currentColor;display:block;flex-shrink:0}
+.audio-waveform .waveform-button,.asset-export-wav{width:32px;height:32px;padding:4px;flex:0 0 32px;display:inline-flex;align-items:center;justify-content:center;border-radius:4px}
+.asset-transport button>svg{width:24px;height:24px;fill:currentColor;display:block}
+.waveform-toolbar .sound-file-history{margin-top:0}
 .waveform-button:focus-visible,.sound-file-history button:focus-visible,.waveform-gain-value:focus-visible{outline:2px solid #e1e9eb;outline-offset:2px}
 .waveform-divider{width:1px;height:20px;background:var(--line);margin:0 4px;flex-shrink:0}
 .waveform-canvas{position:relative;isolation:isolate;height:clamp(260px,43vh,470px);min-height:230px;background:#11181b;border:1px solid #303e44;border-radius:3px;overflow:hidden;touch-action:pan-y;padding-left:40px}
@@ -115,6 +118,7 @@
 .snippet-workspace .sound-file-heading>.audio-icon-button[aria-pressed=true]{background:#52616a;box-shadow:inset 0 0 0 1px #819198;border-radius:4px}
 .snippet-source .waveform-level,.snippet-source .waveform-explanation{display:none}.snippet-source .waveform-canvas{height:clamp(250px,34vh,360px)}
 .snippet-tools{margin-left:auto;flex-wrap:wrap}.snippet-tools [aria-pressed=true]{background:#52616a;border-radius:4px}.snippet-tools button:disabled{opacity:.3}
+.snippet-workspace .waveform-toolbar .waveform-button svg{width:24px;height:24px}
 .snippet-list-heading{font-size:10px;color:var(--muted);margin:4px 0 6px}
 .snippet-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:6px;max-height:156px;overflow-y:auto;scrollbar-width:thin;padding:2px}
 .snippet-row{display:flex;align-items:center;min-width:0;gap:2px;border:1px solid #303e44;border-radius:3px;background:#141d20;padding:3px;min-height:42px}.snippet-row.is-active{background:#243238;border-color:#a8c5d2}

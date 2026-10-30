@@ -1,6 +1,6 @@
 {
   "app": "HärtWare",
-  "release": 105,
-  "patch": "save-picker-2",
-  "date": "2026-10-29"
+  "release": 107,
+  "source_commit": "03e1b55a25fb090b58b3afe0fba114fb0f5522e2",
+  "date": "2026-10-30"
 }
