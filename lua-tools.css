@@ -25,4 +25,4 @@
 /* Zero-width bookmarks decorate source without adding rows or source text. */
 .CodeMirror .lua-inlay{display:inline-block;vertical-align:baseline;margin:0 .3em 0 .1em;padding:0 .25em;border-radius:3px;background:#a4b59a14;color:#92a28b;font-size:.75em;font-style:normal;font-weight:400;line-height:1;user-select:none;-webkit-user-select:none;pointer-events:none}
 .lua-inlays-button{flex-shrink:0;font:12px monospace!important;min-width:27px!important;padding:4px!important;color:var(--muted,#99a49d)}
-.lua-inlays-button[aria-pressed="true"]{background:#a4b59a18;color:#cedabf}
+.lua-inlays-button[aria-pressed="true"]{color:var(--text)}

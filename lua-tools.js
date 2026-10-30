@@ -88,7 +88,7 @@ export function mountLuaTools({editor:cm,project,onJump,document,window,createCo
  function openReference(){close();renderResults();reference.showModal();search.focus();}
  document.getElementById('lua-reference').onclick=openReference;document.getElementById('lua-reference-close').onclick=()=>reference.close();reference.addEventListener('close',()=>cm.focus());search.oninput=renderResults;native.onchange=renderResults;
  status.onclick=()=>{if(diagnostic)onJump(diagnostic.message,{...diagnostic});};
- document.getElementById('lua-target').textContent='LÖVE '+luaTarget.love;
+ document.getElementById('lua-target').textContent='LÖVE '+luaTarget.love+' · subset';
  setInlays(true);check();
  return {close,check,suspend(){request++;clearTimeout(timer);clearTimeout(watchdog);compiler?.terminate();compiler=null;close();},refresh(){if(project().sourceName!==lastSource)schedule();},destroy(){disposed=true;request++;clearTimeout(timer);clearTimeout(watchdog);clearTimeout(hoverTimer);compiler?.terminate();clearHighlight();cm.removeKeyMap(keymap);cm.off('inputRead',inputRead);cm.off('cursorActivity',cursorActivity);cm.off('change',schedule);cm.off('changes',renderInlays);cm.off('swapDoc',swapDocument);cm.off('scroll',closeReference);cm.off('blur',blur);wrapper.removeEventListener('mousedown',pointerDown);wrapper.removeEventListener('mousemove',hover);wrapper.removeEventListener('mouseleave',leave);document.removeEventListener('mouseup',pointerUp);window.removeEventListener('blur',pointerUp);document.removeEventListener('pointerdown',outside);window.removeEventListener('resize',closeReference);cm.operation?.(()=>{for(const item of inlayMarks)item.mark.clear();});inlayMarks=[];inlayButton.onclick=null;popup.remove();}};
 }
