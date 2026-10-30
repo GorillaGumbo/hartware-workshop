@@ -163,6 +163,7 @@
 
 /* Unsaved work is marked by the brand heart on Save; status remains screen-reader accessible. */
 #save-state{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-#save .save-heart{display:none;width:24px;height:24px}
-#save.is-dirty .save-disk{display:none}
-#save.is-dirty .save-heart{display:block}
+#save.is-dirty{color:#fd715e}
+
+/* Match the header gap to the gutter between expanded cards, including its resize handle. */
+.workspace{padding-top:calc(var(--splitter-width) + var(--card-gap) + var(--card-gap))}
