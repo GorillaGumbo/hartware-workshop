@@ -3,7 +3,7 @@ import {fileEdgeFrames} from './audio-file-edges.js';
 import {fileGainAmplitude} from './audio-gain.js';
 import {shapeSettings,shapeDuration,shapeSamples,sampleEnvelope} from './audio-shape.js';
 import {validatePitch,semitonesToRate} from './audio-pitch.js';
-import {validateVolumeRange,dbToGain} from './audio-range.js';
+import {validateVolumeRange,dbToGain,maxVolumeGain} from './audio-range.js';
 import {FilePlaybackClock,chooseFile,seededRandom} from './audio-files.js';
 import {FadeClock} from './audio-fades.js';
 import {playbackSections,audioEditKey} from './audio-edits.js';
@@ -143,8 +143,8 @@ export class AudioPlayer {
  }
  // Prime the existing context in a user gesture, without creating a voice.
  unlock(){if(this.context?.state==='suspended')void this.context.resume().catch(()=>{});}
- setVolume(value){this.volume=Math.max(0,Math.min(1,Number(value)||0));this.updateVolume();}
- setOutputVolume(value){this.outputVolume=Math.max(0,Math.min(1,Number(value)||0));this.updateVolume();}
+ setVolume(value){this.volume=Math.max(0,Math.min(maxVolumeGain,Number(value)||0));this.updateVolume();}
+ setOutputVolume(value){this.outputVolume=Math.max(0,Math.min(maxVolumeGain,Number(value)||0));this.updateVolume();}
  updateVolume(){if(this.gain)this.gain.gain.setValueAtTime(this.volume*this.outputVolume*this.playVolume*(this.rangeNode||this.fileNode||this.ambientNode?1:dbToGain(this.rangeDb??0)*dbToGain(this.outputRangeDb??0)),this.context.currentTime);}
  effectiveVolume(){this.syncFiles();return this.volume*this.outputVolume*this.playVolume*dbToGain(this.rangeDb??0)*dbToGain(this.outputRangeDb??0);}
  sampledRange(){this.syncFiles();return this.source&&this.rangeDb!==null?{db:this.rangeDb,pass:this.rangePass}:null;}

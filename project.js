@@ -10,7 +10,7 @@ import {validateFades,validateFadeSpeed} from './audio-fades.js';
 import {validateOrganization} from './project-folders.js';
 export const FORMAT='lovely-ui-prototype';
 import {validatePitch,validatePitchRange} from './audio-pitch.js';
-import {validateVolumeRange} from './audio-range.js';
+import {validateVolumeRange,maxVolumeGain} from './audio-range.js';
 import {validateRandomRanges,legacyRangeKeys} from './audio-random-modules.js';
 import {validateRangePosition} from './audio-range-module.js';
 import {validateSoundFiles} from './audio-files.js';
@@ -84,9 +84,9 @@ export function validateProject(value){
   if(a.type==='image'&&(typeof a.data!=='string'||!/^data:image\/(png|jpeg|webp|gif);base64,/.test(a.data)||a.data.length>16000000))throw new Error('An image is missing or invalid.');
   if(a.type==='audio'&&a.data!=null&&(typeof a.data!=='string'||!/^data:[^,;]*;base64,[A-Za-z0-9+/]*={0,2}$/.test(a.data)||a.data.length>8500000))throw new Error('An audio file is invalid or too large.');
  }
- if(value.audio!=null){const a=value.audio;if(typeof a.name!=='string'||a.name.length>80||/[\u0000-\u001f]/.test(a.name)||!Number.isFinite(a.volume)||a.volume<0||a.volume>1||(a.assetId!=null&&!value.assets.some(x=>x.id===a.assetId&&x.type==='audio')))throw new Error('The audio event is invalid.');}
+ if(value.audio!=null){const a=value.audio;if(typeof a.name!=='string'||a.name.length>80||/[\u0000-\u001f]/.test(a.name)||!Number.isFinite(a.volume)||a.volume<0||a.volume>maxVolumeGain||(a.assetId!=null&&!value.assets.some(x=>x.id===a.assetId&&x.type==='audio')))throw new Error('The audio event is invalid.');}
  if(value.audio)validateSoundFiles(value.audio,value.assets);
- if(value.audio&&Object.hasOwn(value.audio,'outputVolume')&&(!Number.isFinite(value.audio.outputVolume)||value.audio.outputVolume<0||value.audio.outputVolume>1))throw new Error('Output volume must be between 0 and 1.');
+ if(value.audio&&Object.hasOwn(value.audio,'outputVolume')&&(!Number.isFinite(value.audio.outputVolume)||value.audio.outputVolume<0||value.audio.outputVolume>maxVolumeGain))throw new Error('Output volume must be between silence and +12 dB.');
  if(value.audio?.repeat!=null){const r=value.audio.repeat;if(!['count','forever'].includes(r.mode)||!Number.isInteger(r.count)||r.count<1||r.count>99)throw new Error('Repeat needs a valid mode and a count from 1 to 99.');}
  if(value.audio&&Object.hasOwn(value.audio,'randomRanges')){if(legacyRangeKeys.some(key=>Object.hasOwn(value.audio,key)))throw new Error('Use generic Random Range settings without duplicate legacy range fields.');validateRandomRanges(value.audio.randomRanges);}
  if(value.audio&&Object.hasOwn(value.audio,'volumeRange'))validateVolumeRange(value.audio.volumeRange);

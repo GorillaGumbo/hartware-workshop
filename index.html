@@ -14,11 +14,11 @@
   <div class="identity"><button class="bare mobile-project" id="mobile-project" aria-label="Show project"><span class="icon">folder_open</span></button><span class="brand-lockup" role="img" aria-label="HärtWare"><img class="brand-symbol" src="brand/lovely-logo.svg" width="49" height="49" alt="" aria-hidden="true"><img class="brand-wordmark" src="brand/hartware-wordmark.svg" width="229.04999999999998" height="51.13324909210205" alt="" aria-hidden="true"></span><span class="divider"></span><input id="project-name" aria-label="Project name" value="My first game" spellcheck="false"><span class="save-state" id="save-state" role="status">• Unsaved</span></div>
   <nav class="toolbar" aria-label="Project actions">
     <button class="bare" id="open" aria-label="Open project" data-tip="Open project · Ctrl/⌘ O"><span class="icon">folder_open</span></button>
-    <button class="bare" id="save" aria-label="Save project" data-tip="Save project · Ctrl/⌘ S"><span class="icon">save</span></button>
+    <button class="bare is-dirty" id="save" aria-label="Save project" data-tip="Save project · Ctrl/⌘ S"><span class="icon save-disk">save</span><img class="save-heart" src="brand/save-heart.svg" width="24" height="24" alt="" aria-hidden="true"></button>
     <button class="bare" id="download-project" aria-label="Download project copy" data-tip="Download project copy · Includes original audio and editable settings"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/></svg></button>
-    <button class="bare" id="export" aria-label="Export game" data-tip="Export game (.love)"><span class="icon">upload</span></button>
+    <button class="bare" id="export" hidden aria-label="Export game" data-tip="Export game (.love)"><span class="icon">upload</span></button>
     <button class="bare" id="settings" aria-label="Project settings" data-tip="Project settings"><span class="icon">settings</span></button>
-    <button class="bare" id="help" aria-label="Help" data-tip="Help"><span class="icon">help</span></button>
+    <button class="bare" id="help" hidden aria-label="Help" data-tip="Help"><span class="icon">help</span></button>
   </nav>
 </header>
 <div id="drawer-shade" hidden></div>
