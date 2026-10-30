@@ -1,5 +1,5 @@
 import {mountParameterValue,paintParameterSlider} from './parameter-controls.js';
-import {createSnippetIcon,audioToolPaths} from './audio-ui-icons.js';
+import {createSnippetIcon,audioToolPaths,paintFadeCurveIcon} from './audio-ui-icons.js';
 import {fadeCurveGain} from './audio-fade-curves.js';
 import {maxCrossfadeMs} from './audio-crossfades.js';
 import {crossfadeJoinLimits} from './audio-edits.js';
@@ -12,6 +12,7 @@ const selectionGripPath='M360-160q-33 0-56.5-23.5T280-240q0-33 23.5-56.5T360-320
 export function mountWaveformView(root,{load,snap=null,onSelection=()=>{},onSelectionCommit=()=>{},onPlay=()=>{},onSeek=()=>{},position=()=>null,edit=null,transport=null,toolbarTools=null,historyHost=null,viewState=null,createWave,createRegions,createHover=null,document=root.ownerDocument,observe=callback=>new ResizeObserver(callback),frame=requestAnimationFrame,cancelFrame=cancelAnimationFrame}){
  let destroyed=false,refreshing=false,stale=false,request=0,wave=null,regions=null,selection=null,data=null,editing=false,playing=false,raf=0,snapping=false,selectionVersion=0,snapRequest=0;
  let factor=viewState?.factor??1,splitPoint=null,splitMode=!!viewState?.splitMode,swapped=!!viewState?.swapped,fadeInMode=!!(viewState?.fadeInMode??viewState?.fadeMode),fadeOutMode=!!(viewState?.fadeOutMode??viewState?.fadeMode),blendMode=!!viewState?.blendMode,drag=null,wrapper=null,disableSelection=()=>{},overlay=null;
+ let gainOpen=false;
  let scale=null,scaleKey='',hoverTime=0,pointerDown=null,crossfadeMove=null,markers=[],markerActions={},promotion=null,promotionNode=null;
  let inCurve=edit?.edgeFades?(edit.edgeFades.inCurve??'linear'):(viewState?.inCurve??'linear'),outCurve=edit?.edgeFades?(edit.edgeFades.outCurve??'linear'):(viewState?.outCurve??'linear'),crossCurve=edit?.crossfadeMs?(edit.crossfadeCurve??'linear'):(viewState?.crossCurve??'linear'),restoringScroll=true,viewConfigured=false;
  let requestedSplit=viewState?.splitPoint??null,scrollTime=viewState?.scrollTime??0,focusKey=viewState?.focusKey??null;
@@ -47,14 +48,20 @@ export function mountWaveformView(root,{load,snap=null,onSelection=()=>{},onSele
  const slider=el('input','audio-parameter-slider waveform-gain-slider');slider.type='range';slider.min=String(fileGainLimits.minDb);slider.max=String(fileGainLimits.maxDb);slider.step='.1';slider.value=String(edit?.gainDb??0);slider.setAttribute('aria-label','File gain');tip(slider,'Whole-file gain · Applies to every Event using this file · Release to apply');
  const sliderShell=el('span','parameter-slider-shell waveform-gain-control'),unity=el('span','parameter-unity');sliderShell.style.setProperty('--parameter-unity','0.5');unity.setAttribute('aria-hidden','true');unity.setAttribute('title','0 dB · Unity gain');sliderShell.append(slider,unity);
  const gainValue=el('output','waveform-gain-value',formatDb(edit?.gainDb??0)+' dB');gainValue.setAttribute('aria-label','File gain in decibels');
+ const gainTools=toolGroup('Sound level',[]),gainButton=edit?button('File gain controls','volume',()=>toggleGain(),gainTools):null;if(edit)toolbar.insertBefore(gainTools,toolbarTools??null);
  const gainDivider=el('span','waveform-divider');gainDivider.setAttribute('aria-hidden','true');
  level.append(speaker,sliderShell,gainValue,gainDivider);const normalize=button('Normalize file peak to −1 dBFS','normalize',()=>commit('normalize'),level),resetLevel=button('Reset file gain to 0 dB','restore',()=>commit('clear-gain'),level);
  const explanation=el('div','waveform-explanation');const clearCross=button('Remove crossfades','clear',()=>commit('clear-crossfade'),explanation);tip(clearCross,'Remove crossfades to unlock section editing · Keep the section order');
- const curveControls=el('div','waveform-curve-controls');curveControls.setAttribute('role','group');curveControls.setAttribute('aria-label','Fade types');
- function curveChoice(label,value,change){const group=el('label','waveform-curve-choice',label),select=el('select');select.setAttribute('aria-label',label+' type');for(const [key,title] of [['linear','Linear'],['equal-power','Equal power']]){const option=el('option','',title);option.value=key;select.append(option);}select.value=value;listen(select,'dblclick',e=>{e.preventDefault();e.stopPropagation();if(!destroyed&&data&&!select.disabled){select.value='linear';stopForGesture();change('linear');drawTools();sync();}});listen(select,'change',()=>{if(destroyed||!data)return;stopForGesture();change(select.value);drawTools();sync();});group.append(select);curveControls.append(group);return {group,select};}
- const inType=curveChoice('Fade in',inCurve,value=>{focusKey='curve-in';inCurve=value;if(Number(edgeIn.value)||Number(edgeOut.value))commit('edges');}),outType=curveChoice('Fade out',outCurve,value=>{focusKey='curve-out';outCurve=value;if(Number(edgeIn.value)||Number(edgeOut.value))commit('edges');}),crossType=curveChoice('Crossfade',crossCurve,value=>{focusKey='curve-cross';crossCurve=value;if(edit?.crossfadeMs)commit('crossfade');});
+ function curveChoice(label,value,change,side){const node=el('button','audio-icon-button waveform-button waveform-curve-toggle');node.type='button';node.value=value;node.setAttribute('aria-label',label+' type');listen(node,'click',()=>{if(destroyed||!data||node.disabled)return;stopForGesture();node.value=node.value==='linear'?'equal-power':'linear';change(node.value);drawTools();sync();});listen(node,'dblclick',e=>{e.preventDefault();e.stopPropagation();if(destroyed||!data||node.disabled)return;node.value='linear';stopForGesture();change('linear');drawTools();sync();});return {group:node,select:node,side,label};}
+ const inType=curveChoice('Fade in',inCurve,value=>{focusKey='curve-in';inCurve=value;if(Number(edgeIn.value)||Number(edgeOut.value))commit('edges');},'in'),outType=curveChoice('Fade out',outCurve,value=>{focusKey='curve-out';outCurve=value;if(Number(edgeIn.value)||Number(edgeOut.value))commit('edges');},'out'),crossType=curveChoice('Crossfade',crossCurve,value=>{focusKey='curve-cross';crossCurve=value;if(edit?.crossfadeMs)commit('crossfade');},'cross');
+ if(edit){const group=blend.parentElement;group.replaceChildren(fadeIn,inType.group,blend,crossType.group,fadeOut,outType.group,split);}
+ level.classList.add('audio-level-popover');level.setAttribute('role','group');level.setAttribute('aria-label','File level');
+ function closeGain(restore=false){gainOpen=false;level.hidden=true;gainButton?.setAttribute('aria-expanded','false');if(restore)gainButton?.focus({preventScroll:true});}
+ function toggleGain(){if(gainOpen){closeGain(true);return;}gainOpen=true;level.hidden=false;gainButton.setAttribute('aria-expanded','true');positionGain();slider.focus({preventScroll:true});}
+ function positionGain(){if(!gainOpen||!gainButton)return;const box=gainButton.getBoundingClientRect(),bounds=root.getBoundingClientRect();level.style.top=box.bottom-bounds.top+6+'px';const width=level.getBoundingClientRect().width||355;level.style.left=Math.max(0,Math.min(Math.max(0,bounds.width-width),box.left-bounds.left))+'px';level.style.right='auto';}
+ listen(root,'click',e=>{if(gainOpen&&!level.contains?.(e.target)&&!gainButton.contains?.(e.target))closeGain();});listen(level,'keydown',e=>{if(e.key==='Escape'){e.preventDefault();e.stopPropagation();closeGain(true);}});
  const cancel=el('button','outline-button waveform-cancel','Cancel waveform'),retry=el('button','outline-button waveform-retry','Retry waveform');cancel.type=retry.type='button';retry.hidden=true;
- root.append(toolbar,curveControls,canvas,ruler,level,explanation,status);root.append(cancel,retry);
+ root.append(toolbar,canvas,ruler,level,explanation,status);root.append(cancel,retry);
  const validEdges=()=>[edgeIn,edgeOut].every(n=>n.value.trim()!==''&&Number.isInteger(Number(n.value))&&Number(n.value)>=0&&Number(n.value)<=maxFileFadeMs);
  const validCross=()=>cross.value.trim()!==''&&Number.isInteger(Number(cross.value))&&Number(cross.value)>=1&&Number(cross.value)<=maxCrossfadeMs;
  const validGain=()=>gain.value.trim()!==''&&Number.isFinite(Number(gain.value))&&Number(gain.value)>=fileGainLimits.minDb&&Number(gain.value)<=fileGainLimits.maxDb;
@@ -64,7 +71,8 @@ export function mountWaveformView(root,{load,snap=null,onSelection=()=>{},onSele
  function commit(name){if(destroyed||!data||!edit)return false;if(name==='edges'&&!validEdges()||name==='crossfade'&&(!validCross()||!availableBlend())||name==='gain'&&!validGain())return false;return edit.action(name);}
  function sync(){
   const ready=!!data,locked=!!edit?.crossfadeMs;
-  curveControls.hidden=!ready||!edit||!fadeInMode&&!fadeOutMode&&!blendMode;inType.group.hidden=!fadeInMode;outType.group.hidden=!fadeOutMode;crossType.group.hidden=!blendMode;for(const type of [inType,outType,crossType])type.select.disabled=!ready;
+  inType.group.hidden=!edit||!fadeInMode;outType.group.hidden=!edit||!fadeOutMode;crossType.group.hidden=!edit||!blendMode;for(const type of [inType,outType,crossType]){const equal=type.select.value==='equal-power';type.select.disabled=!ready||(type===inType?!Number(edgeIn.value):type===outType?!Number(edgeOut.value):false);type.select.setAttribute('aria-pressed',String(equal));paintFadeCurveIcon(type.select,type.side,equal,document);tip(type.select,type.label+': '+(equal?'Equal power':'Linear')+' · Switch to '+(equal?'Linear':'Equal power'));}
+
 
   for(const n of buttons)n.disabled=!ready;slider.disabled=!ready;
   minus.disabled=!ready||factor<=1;plus.disabled=!ready||factor>=32;clear.disabled=!ready||!selection;
@@ -83,7 +91,7 @@ export function mountWaveformView(root,{load,snap=null,onSelection=()=>{},onSele
   clearCross.hidden=!locked;
   tip(all,'Select whole file · Hover to choose playback start · Click to seek while playing · Drag to select.');
   tip(split??all,splitMode?'Drag a colored section across the split to swap · Escape returns to selection.':(split?.getAttribute('data-tip')??all.getAttribute('data-tip')));
-  explanation.hidden=!ready||!locked;ruler.hidden=level.hidden=!ready;root.setAttribute('aria-busy',String(refreshing));if(refreshing||stale){for(const n of [...buttons,...handles,slider,inType.select,outType.select,crossType.select])n.disabled=true;}gainEditor.sync();syncPromotion();restoreFocus();
+  explanation.hidden=!ready||!locked;ruler.hidden=!ready;level.hidden=!edit||!ready||!gainOpen;if(gainButton){gainButton.setAttribute('aria-expanded',String(gainOpen));tip(gainButton,'File gain: '+formatDb(Number(slider.value))+' dB · Open level controls');}positionGain();root.setAttribute('aria-busy',String(refreshing));if(refreshing||stale){for(const n of [...buttons,...handles,slider,inType.select,outType.select,crossType.select])n.disabled=true;}gainEditor.sync();syncPromotion();restoreFocus();
  }
  function restoreFocus(){if(!focusKey||refreshing||stale)return;const target=handles.find(n=>n.classList.contains(focusKey))??(focusKey==='gain'?slider:null)??({'curve-in':inType,'curve-out':outType,'curve-cross':crossType}[focusKey]?.select);if(target?.disabled)return;target?.focus({preventScroll:true});focusKey=null;}
  function setSelection(first,last){if(!data||destroyed)return;selectionVersion++;selection=first===null?null:selectionBounds(first,last,data);editing=true;regions?.clearRegions();if(selection)regions?.addRegion({...selection,color:'rgba(137,183,198,.18)',drag:true,resize:true,minLength:1/data.sampleRate});editing=false;sync();onSelection(selection?{...selection}:null);if(!playing)wave?.setTime(selection?.start??hoverTime);}
@@ -199,7 +207,7 @@ export function mountWaveformView(root,{load,snap=null,onSelection=()=>{},onSele
   if(!promotionNode)return;promotionNode.hidden=!visible;promotionNode.disabled=!!promotion?.disabled;tip(promotionNode,promotion?.disabled?promotion.reason:'Create snippet from selection');
   if(visible){const width=wrapper.scrollWidth??wrapper.getBoundingClientRect().width,left=restoringScroll?scrollTime:readScroll(),span=width>0?(wave.getWidth?.()??width)/width*data.duration:data.duration,first=Math.max(selection.start,left),last=Math.min(selection.end,left+span);promotionNode.hidden=last<=first;promotionNode.style.left=(first+last)/2/data.duration*100+'%';}
  }
- const observer=observe(()=>{if(data&&viewConfigured){zoomTo(factor);const h=Math.max(96,Math.floor(((canvas.clientHeight||320)-16)/data.peaks.length));wave.setOptions?.({height:h});}});observer.observe(canvas);
+ const observer=observe(()=>{positionGain();if(data&&viewConfigured){zoomTo(factor);const h=Math.max(96,Math.floor(((canvas.clientHeight||320)-16)/data.peaks.length));wave.setOptions?.({height:h});}});observer.observe(canvas);
  function disposeWave(){pointerDown=null;if(wrapper)for(const type of ['pointerdown','pointerup','pointercancel'])wrapper['on'+type]=null;scale?.remove();scale=null;scaleKey='';rulerTicks.replaceChildren();cancelFrame(raf);raf=0;cancelDrag();disableSelection();disableSelection=()=>{};removeHandles();wave?.destroy();wave=null;regions=null;wrapper=null;}
  async function run({retain=false}={}){
   const retaining=retain&&!!wave&&!!data,serial=++request,current=()=>!destroyed&&serial===request;
